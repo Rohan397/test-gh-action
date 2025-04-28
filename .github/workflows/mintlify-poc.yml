@@ -30,7 +30,7 @@ jobs:
           curl -fsSL https://ollama.com/install.sh | sh
       - name: run ollama
         run: |
-          ollama serve &&  ollama pull llama3.2 && ollama pull mxbai-embed-large
+          ollama pull llama3.2 && ollama pull mxbai-embed-large && ollama list
       # Step 3: Set Up Python Environment
       - name: Set Up Python
         uses: actions/setup-python@v4
