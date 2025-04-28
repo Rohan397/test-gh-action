@@ -1,0 +1,51 @@
+name: Process PR Data
+on:
+  pull_request:
+    types: [opened, edited, reopened, synchronize]
+
+jobs:
+  process:
+    runs-on: ubuntu-latest
+    steps:
+      # Step 1: Get PR Description
+      - name: Extract PR Description
+        id: pr-description
+        run: |
+          echo "DESCRIPTION<<EOF" >> $GITHUB_OUTPUT
+          echo "${{ github.event.pull_request.body || '[No description]' }}" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      # Step 2: Fetch URL Contents
+      - name: Fetch URL Data
+        id: fetch-url
+        run: |
+          curl https://personalprojects-882101cf.mintlify.app/READMES/mintlify-gh-action-poc > output.html
+          echo "FILEPATH=output.html" >> $GITHUB_OUTPUT
+      - name: Install Ollama
+        run: |
+          curl -fsSL https://ollama.com/install.sh | sh
+      
+      -name: run ollama
+        run: |
+          ollama serve &&  ollama pull llama3.2 && ollama pull mxbai-embed-large
+      # Step 3: Set Up Python Environment
+      - name: Set Up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      # Step 3: Install dependencies
+      - name: Install requirements
+        run: |
+          python3 -m venv venv
+          src venv/bin/activate
+          ollama serve
+          pip install -r requirements.txt
+      # Step 4: Run Custom Python Script
+      - name: Execute Analysis Script
+        run: |
+          echo "PR Description: ${{ steps.pr-description.outputs.DESCRIPTION }}"
+          echo "URL Content: ${{ steps.fetch-url.outputs.CONTENT }}"
+          
+          python my-script.py \
+            "${{ steps.pr-description.outputs.DESCRIPTION }}" \
+            "${{ steps.fetch-url.outputs.FILEPATH }}"

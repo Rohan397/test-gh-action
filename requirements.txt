@@ -1,0 +1,9 @@
+langchain
+langchain-ollama
+langchain-chroma
+langchain-community
+pandas
+sec-api
+requests
+beautifulsoup4
+lxml
