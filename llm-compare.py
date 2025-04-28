@@ -36,8 +36,8 @@ def process_document(filename, vector_store):
     document = loader.load()
 
     text_splitter = RecursiveCharacterTextSplitter(
-        chunk_size=500,
-        chunk_overlap=100,
+        chunk_size=100,
+        chunk_overlap=20,
         length_function=len,
         add_start_index=True,
     )
