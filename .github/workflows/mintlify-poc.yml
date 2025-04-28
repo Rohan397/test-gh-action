@@ -7,6 +7,10 @@ jobs:
   process:
     runs-on: ubuntu-latest
     steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
       # Step 1: Get PR Description
       - name: Extract PR Description
         id: pr-description
@@ -24,8 +28,7 @@ jobs:
       - name: Install Ollama
         run: |
           curl -fsSL https://ollama.com/install.sh | sh
-      
-      -name: run ollama
+      - name: run ollama
         run: |
           ollama serve &&  ollama pull llama3.2 && ollama pull mxbai-embed-large
       # Step 3: Set Up Python Environment
@@ -37,8 +40,7 @@ jobs:
       - name: Install requirements
         run: |
           python3 -m venv venv
-          src venv/bin/activate
-          ollama serve
+          source venv/bin/activate
           pip install -r requirements.txt
       # Step 4: Run Custom Python Script
       - name: Execute Analysis Script
