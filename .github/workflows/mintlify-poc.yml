@@ -39,8 +39,6 @@ jobs:
       # Step 3: Install dependencies
       - name: Install requirements
         run: |
-          python3 -m venv venv
-          source venv/bin/activate
           pip install -r requirements.txt
       # Step 4: Run Custom Python Script
       - name: Execute Analysis Script
