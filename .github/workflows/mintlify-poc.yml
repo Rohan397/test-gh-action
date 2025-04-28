@@ -48,6 +48,6 @@ jobs:
           echo "PR Description: ${{ steps.pr-description.outputs.DESCRIPTION }}"
           echo "URL Content: ${{ steps.fetch-url.outputs.CONTENT }}"
           
-          python my-script.py \
+          python llm-compare.py \
             "${{ steps.pr-description.outputs.DESCRIPTION }}" \
             "${{ steps.fetch-url.outputs.FILEPATH }}"
