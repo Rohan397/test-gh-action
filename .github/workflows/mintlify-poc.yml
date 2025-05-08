@@ -7,11 +7,11 @@ jobs:
   process:
     runs-on: ubuntu-latest
     steps:
-
+      # Step 1: Checkout repository
       - name: Checkout repository
         uses: actions/checkout@v4
       
-      # Step 1: Get PR Description
+      # Step 2: Get PR Description
       - name: Extract PR Description
         id: pr-description
         run: |
@@ -19,33 +19,18 @@ jobs:
           echo "${{ github.event.pull_request.body || '[No description]' }}" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
 
-      # Step 2: Fetch URL Contents
+      # Step 3: Fetch URL Contents
       - name: Fetch URL Data
         id: fetch-url
         run: |
           curl https://personalprojects-882101cf.mintlify.app/READMES/mintlify-gh-action-poc > output.html
           echo "FILEPATH=output.html" >> $GITHUB_OUTPUT
-      - name: Install Ollama
+
+      # Step 4: Build and run Docker container
+      - name: Build and run Docker container
         run: |
-          curl -fsSL https://ollama.com/install.sh | sh
-      - name: run ollama
-        run: |
-          ollama pull llama3.2 && ollama pull mxbai-embed-large && ollama list
-      # Step 3: Set Up Python Environment
-      - name: Set Up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-      # Step 3: Install dependencies
-      - name: Install requirements
-        run: |
-          pip install -r requirements.txt
-      # Step 4: Run Custom Python Script
-      - name: Execute Analysis Script
-        run: |
-          echo "PR Description: ${{ steps.pr-description.outputs.DESCRIPTION }}"
-          echo "URL Content: ${{ steps.fetch-url.outputs.CONTENT }}"
-          
-          python llm-compare.py \
+          docker build -t llm-compare .
+          docker run --privileged \
+            llm-compare \
             "${{ steps.pr-description.outputs.DESCRIPTION }}" \
             "${{ steps.fetch-url.outputs.FILEPATH }}"
