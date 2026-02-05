@@ -7,6 +7,9 @@ jobs:
   process:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
       # Step 1: Get PR Description
       - name: Extract PR Description
         id: pr-description
